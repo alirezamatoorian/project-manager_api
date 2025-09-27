@@ -2,8 +2,6 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from .utils import generate_otp_code
-from django.core.cache import cache
 
 User = get_user_model()
 
