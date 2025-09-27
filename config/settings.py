@@ -143,14 +143,25 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),  # اعتبار Access Token (مثلاً ۵ دقیقه)
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),  # اعتبار Refresh Token (مثلاً ۱ روز)
-    'ROTATE_REFRESH_TOKENS': False,  # هر بار رفرش بشه یا نه
-    'BLACKLIST_AFTER_ROTATION': True,  # بلاک شدن توکن قبلی بعد از رفرش
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True
 }
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Rest Poll Api',
     'DESCRIPTION': 'Documented API using drf-spectacular',
     'VERSION': '1.0.0',
+}
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",  # آدرس Redis (db شماره 1)
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
 }

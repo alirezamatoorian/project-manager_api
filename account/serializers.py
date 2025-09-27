@@ -2,8 +2,21 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from .utils import generate_otp_code
+from django.core.cache import cache
 
 User = get_user_model()
+
+
+class SendOtpSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=11)
+
+    def create(self, validated_data):
+        phone = validated_data['phone']
+        code = generate_otp_code()
+        otp = cache.set(phone, code, timeout=180)
+        print(code)
+        return otp
 
 
 class RegisterSerializer(ModelSerializer):
