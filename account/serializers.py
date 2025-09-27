@@ -11,12 +11,6 @@ User = get_user_model()
 class SendOtpSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=11)
 
-    def create(self, validated_data):
-        phone = validated_data['phone']
-        code = generate_otp_code()
-        otp = cache.set(phone, code, timeout=180)
-        print(code)
-        return otp
 
 
 class RegisterSerializer(ModelSerializer):

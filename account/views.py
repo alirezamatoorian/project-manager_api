@@ -1,20 +1,25 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated
+from .utils import generate_otp_code,store_otp
 
 
 # Create your views here.
 
 
 class SendOtpView(APIView):
-    def post(self,request,*args,**kwargs):
-        serializer=SendOtpSerializer(data=request.data)
+    def post(self, request, *args, **kwargs):
+        serializer = SendOtpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        phone = serializer.validated_data['phone']
+        otp = generate_otp_code()
+        store_otp(phone, otp, ttl=180)
+        print(f"OTP for {phone} is {otp}")
         return Response({"message": "OTP sent successfully!"}, status=200)
+
 
 class RegisterView(CreateAPIView):
     queryset = User.objects.all()
