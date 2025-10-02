@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.core.cache import cache
 
 User = get_user_model()
 
@@ -10,23 +11,21 @@ class SendOtpSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=11)
 
 
-
-class RegisterSerializer(ModelSerializer):
-    password = serializers.CharField(write_only=True, validators=[validate_password])
-    password2 = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = User
-        fields = ['phone', 'password', 'password2']
+class VerifyOtpSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=11)
+    code = serializers.CharField(max_length=5)
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError('پسورد و تکرار پسورد با هم یکی نیستند!!!')
+        phone = attrs['phone']
+        code = attrs['code']
+
+        stored_code = cache.get(phone)
+        if not stored_code:
+            raise serializers.ValidationError("otp expired or invalid")
+        if stored_code != code:
+            raise serializers.ValidationError("invalid otp")
         return attrs
 
-    def create(self, validated_data):
-        validated_data.pop('password2')
-        return User.objects.create_user(**validated_data)
 
 
 class ProfileSerializer(ModelSerializer):

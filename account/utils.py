@@ -1,5 +1,4 @@
 import secrets
-
 from django.core.cache import cache
 
 
