@@ -8,3 +8,7 @@ def generate_otp_code():
 
 def store_otp(phone, otp, ttl=180):
     cache.set(phone, otp, ttl)
+
+
+def delete_otp(phone):
+    cache.delete(phone)
