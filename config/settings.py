@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -82,10 +83,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'project-manager',
-        'USER': 'project-manager_admin',
-        'PASSWORD': 'shahrivar1380',
-        'PORT': '5432',
+        'NAME': os.getenv('POSTGRES_DB', 'project-manager'),
+        'USER': os.getenv('POSTGRES_USER', 'project-manager_admin'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'shahrivar1380'),
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),  #  نکته مهم
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
     }
@@ -162,7 +164,7 @@ SPECTACULAR_SETTINGS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://localhost:6379/1",
+        "LOCATION": os.getenv("REDIS_URL", "redis://localhost:6379/1"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
