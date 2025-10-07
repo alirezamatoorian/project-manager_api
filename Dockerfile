@@ -1,19 +1,31 @@
-# مرحله ۱: انتخاب بیس ایمیج
 FROM python:3.12-slim
 
-# مرحله ۲: تنظیم متغیرهای محیطی
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PIP_NO_CACHE_DIR=1
 
-# مرحله ۳: ایجاد دایرکتوری برای اپ
 WORKDIR /app
 
-# مرحله ۴: نصب وابستگی‌ها
-COPY requirements.txt /app/
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# ---------- مرحله ۴: نصب وابستگی‌های سیستم ----------
+# نصب ابزارهای موردنیاز برای psycopg2 (PostgreSQL) و غیره
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    netcat-traditional \
+ && rm -rf /var/lib/apt/lists/*
 
-# مرحله ۵: کپی کل پروژه داخل کانتینر
+COPY requirements.txt /app/
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+
 COPY . /app/
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# ---------- مرحله ۷: اضافه کردن entrypoint ----------
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# ---------- مرحله ۸: تعیین entrypoint ----------
+ENTRYPOINT ["/entrypoint.sh"]
+
+
+#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
