@@ -13,19 +13,27 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
-
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+env_file = BASE_DIR / 'env.docker' if os.environ.get('DOCKER') else BASE_DIR / '.env'
+
+environ.Env.read_env(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p8tj+g=jh@9bm)a=s)nkd%z7l@-6j6=+i0pbgmp#v8xn94z+o#'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -86,7 +94,7 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB', 'project-manager'),
         'USER': os.getenv('POSTGRES_USER', 'project-manager_admin'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'shahrivar1380'),
-        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),  #  نکته مهم
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),  # نکته مهم
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
