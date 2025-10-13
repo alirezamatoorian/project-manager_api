@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # third party app
     'rest_framework',
     'drf_spectacular',
+    'phonenumber_field',
 
     # local apps
     'account.apps.AccountConfig',
@@ -94,7 +95,7 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB', 'project-manager'),
         'USER': os.getenv('POSTGRES_USER', 'project-manager_admin'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'shahrivar1380'),
-        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),  # نکته مهم
+        'HOST': 'localhost',  # نکته مهم
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
@@ -172,7 +173,7 @@ SPECTACULAR_SETTINGS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv("REDIS_URL", "redis://localhost:6379/1"),
+        "LOCATION": "redis://localhost:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

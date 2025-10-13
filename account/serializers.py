@@ -3,12 +3,13 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.cache import cache
+from phonenumber_field.serializerfields import PhoneNumberField
 
 User = get_user_model()
 
 
 class SendOtpSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=11)
+    phone = PhoneNumberField(region='IR')
 
 
 class VerifyOtpSerializer(serializers.Serializer):
@@ -25,7 +26,6 @@ class VerifyOtpSerializer(serializers.Serializer):
         if stored_code != code:
             raise serializers.ValidationError("invalid otp")
         return attrs
-
 
 
 class ProfileSerializer(ModelSerializer):

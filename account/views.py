@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,7 +23,7 @@ class SendOtpView(APIView):
         otp = generate_otp_code()
         store_otp(phone, otp, ttl=180)
         print(f"OTP for {phone} is {otp}")
-        return Response({"message": "OTP sent successfully!"}, status=200)
+        return Response({"message": "OTP sent successfully!"}, status=status.HTTP_200_OK)
 
 
 class VerifyOtpView(APIView):
