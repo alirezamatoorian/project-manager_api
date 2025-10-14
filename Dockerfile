@@ -23,7 +23,6 @@ COPY . /app/
 # ---------- مرحله ۷: اضافه کردن entrypoint ----------
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-ENV DOCKER=1
 # ---------- مرحله ۸: تعیین entrypoint ----------
 ENTRYPOINT ["/entrypoint.sh"]
 

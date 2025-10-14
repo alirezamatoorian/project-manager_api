@@ -13,11 +13,11 @@ class SendOtpSerializer(serializers.Serializer):
 
 
 class VerifyOtpSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=11)
+    phone = PhoneNumberField(region='IR')
     code = serializers.CharField(max_length=5)
 
     def validate(self, attrs):
-        phone = attrs['phone']
+        phone = str(attrs['phone'])
         code = attrs['code']
 
         stored_code = cache.get(phone)

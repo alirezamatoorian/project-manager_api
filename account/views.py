@@ -19,7 +19,7 @@ class SendOtpView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = SendOtpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        phone = serializer.validated_data['phone']
+        phone = str(serializer.validated_data['phone'])
         otp = generate_otp_code()
         store_otp(phone, otp, ttl=180)
         print(f"OTP for {phone} is {otp}")

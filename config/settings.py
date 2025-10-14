@@ -22,9 +22,9 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 
-env_file = BASE_DIR / 'env.docker' if os.environ.get('DOCKER') else BASE_DIR / '.env'
+env_file = BASE_DIR / 'env.docker' if os.environ.get('DOCKER') else BASE_DIR / '.env.dev'
 
-environ.Env.read_env(BASE_DIR / '.env')
+environ.Env.read_env(env_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -92,11 +92,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'project-manager'),
-        'USER': os.getenv('POSTGRES_USER', 'project-manager_admin'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'shahrivar1380'),
-        'HOST': 'localhost',  # نکته مهم
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        'NAME': env("POSTGRES_DB"),
+        'USER': env("POSTGRES_USER"),
+        'PASSWORD': env("POSTGRES_PASSWORD"),
+        'HOST': env("POSTGRES_HOST"),
+        'PORT': env("POSTGRES_PORT"),
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
     }
@@ -173,7 +173,7 @@ SPECTACULAR_SETTINGS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://localhost:6379/1",
+        "LOCATION": env("REDIS_URL"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
