@@ -8,8 +8,10 @@ User = get_user_model()
 
 class Project(models.Model):
     class Status(models.TextChoices):
+        DRAFT = 'draft', 'Draft'
         ACTIVE = "active", "Active"
         COMPLETED = "completed", "Completed"
+        ARCHIVE = 'archive', 'Archive'
 
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
@@ -41,7 +43,7 @@ class Task(models.Model):
 
     title = models.CharField(max_length=250)
     description = models.TextField(blank=True, null=True)
-    file = models.FileField(upload_to='tasks_file/',null=True,blank=True)
+    file = models.FileField(upload_to='tasks_file/', null=True, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
     status = models.CharField(max_length=11, choices=Status.choices, default=Status.Todo)
     priority = models.CharField(max_length=11, choices=Priority.choices, default=Priority.LOW)
