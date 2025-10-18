@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 from .serializers import *
 from rest_framework.viewsets import ModelViewSet
 from .permissions import *
@@ -21,7 +21,10 @@ class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all().select_related('manager').prefetch_related('members')
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrAdminOrReadOnly]
     pagination_class = CustomPagination
-    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['status', 'manager']
+    search_fields = ['title']
+    ordering_fields = ['created_at']
 
     @action(methods=['post'], detail=True, permission_classes=[IsOwner])
     def add_member_to_project(self, request, pk=None):
