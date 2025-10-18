@@ -26,24 +26,24 @@ class ProjectViewSet(ModelViewSet):
     @action(methods=['post'], detail=True, permission_classes=[IsOwner])
     def add_member_to_project(self, request, pk=None):
         project = self.get_object()
-        user_id = request.data.get('user_id')
-        if not user_id:
-            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
-        user = get_object_or_404(User, id=user_id)
+        user_phone = request.data.get('user_phone')
+        if not user_phone:
+            return Response({"error": "user_phone is required"}, status=status.HTTP_400_BAD_REQUEST)
+        user = get_object_or_404(User, phone=user_phone)
         project.members.add(user)
         return Response({"status": f"{user.phone} added to project"}, status=status.HTTP_200_OK)
 
     @action(methods=['post'], detail=True, permission_classes=[IsOwner])
     def remove_member_from_project(self, request, pk=None):
         project = self.get_object()
-        user_id = request.data.get('user_id')
-        if not user_id:
-            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
-        user = get_object_or_404(User, id=user_id)
+        user_phone = request.data.get('user_phone')
+        if not user_phone:
+            return Response({"error": "user_phone is required"}, status=status.HTTP_400_BAD_REQUEST)
+        user = get_object_or_404(User, phone=user_phone)
         if user == project.manager:
             return Response({"error": "مدیر پروژه نمی‌تواند حذف شود"}, status=status.HTTP_400_BAD_REQUEST)
-        if not project.members.filter(id=user_id).exists():
-            return Response({"error": "این کاربر عذو پروژه نیست"}, status=status.HTTP_400_BAD_REQUEST)
+        if not project.members.filter(phone=user_phone).exists():
+            return Response({"error": "این کاربر عضو پروژه نیست"}, status=status.HTTP_400_BAD_REQUEST)
         project.members.remove(user)
         return Response({"status": f"{user.phone} remove from project"}, status=status.HTTP_200_OK)
 
@@ -70,7 +70,7 @@ class TaskViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Task.objects.filter(
-            Q(project__members=self.request.user)|Q(pproject__manager=self.request.user))\
+            Q(project__members=self.request.user) | Q(pproject__manager=self.request.user)) \
             .select_related('project', 'assignee')
 
     def perform_create(self, serializer):
